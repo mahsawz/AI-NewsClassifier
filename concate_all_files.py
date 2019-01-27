@@ -1,7 +1,8 @@
 filenames = []
 for i in range(511):
-	filenames.append(str(i) + ".txt")	
+	filenames.append(str(i) + ".txt")
 print(filenames)
+
 
 with open("home/mahsa/Desktop/final_data.txt", 'w') as outfile:
     for fname in filenames:
