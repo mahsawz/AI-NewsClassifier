@@ -22,7 +22,6 @@ print(' '.join([index_to_word[x] for x in x_train[0]]))
 print(y_train[0])
 
 
-
 from keras.preprocessing.text import Tokenizer
 
 max_words = 10000
