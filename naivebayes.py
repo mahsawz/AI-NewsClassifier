@@ -2,10 +2,10 @@
 from __future__ import division
 import re
 import string
-import io 
+import io
 import random
-from nltk.corpus import stopwords 
-from nltk.tokenize import word_tokenize 
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk.stem import PorterStemmer
 from nltk.stem import WordNetLemmatizer
@@ -45,40 +45,32 @@ def cleanText(text):
     text = text.replace("\n", " ")
     text = text.replace("-", "")
 
-    stop_words = set(stopwords.words('english')) 
+    stop_words = set(stopwords.words('english'))
 
     for word in stop_words:
         text = text.replace(" " + word + " ", " ")
-    
-    # terms = re.findall(r'\w+', text) 
-    # terms = [term for term in terms if not term.isdigit()] 
     return text
 
 
 def pClass1(word, countallword1, countDistWords1, class1words):
     if word in class1words.keys():
-        tmp = (class1words[word])/(countDistWords1+countallword1) 
-        # print (tmp, "tmppppp")
+        tmp = (class1words[word])/(countDistWords1+countallword1)
         return math.log10(tmp )
     else:
 
         tmp = 1/(countDistWords1+countallword1)  # unknown words
-        # print (tmp, "tmppppp")
-
         return math.log10(tmp )
 
 def pClass2(word, countallword2, countDistWords2, class2words):
     if word in class2words.keys():
-        tmp = (class2words[word])/(countDistWords2+countallword2) 
+        tmp = (class2words[word])/(countDistWords2+countallword2)
         return math.log10(tmp )
     else:
-        tmp = 1/(countDistWords2+countallword2) 
+        tmp = 1/(countDistWords2+countallword2)
         return math.log10(tmp)
 
 
 def calculateP(text, pclass1, pclass2, countallword1, countallword2, countDistWords1,countDistWords2,class1words,class2words):
-    # text = cleanText(text)
-    # text = text.split("," and "\n" and " " and ":" and "?" and "\"" and "‌" and " ")
     pWordInClass1 = pclass1
     pWordInClass2 = pclass2
     pmax1 = 0
@@ -86,16 +78,11 @@ def calculateP(text, pclass1, pclass2, countallword1, countallword2, countDistWo
     impword2 = 0
     impword1 = 0
 
-
-
     for word in text:
-        
         p = pClass1(word, countallword1, countDistWords1, class1words)
-        # if p > pmax1:
         pmax1 = p
         impword1 = word
         p = pClass2(word, countallword2, countDistWords2, class2words)
-        # if p > pmax2:
         pmax2 = p
         impword2 = word
         pWordInClass1 += pClass1(word, countallword1, countDistWords1, class1words)
@@ -134,20 +121,14 @@ def classifier():
     class1 = cleanText(class1)
     class2 = cleanText(class2)
 
-    # print(class1)
-
-
     train1, test1 = randonPartitioner(class1, 0.10)
     train2, test2 = randonPartitioner(class2, 0.10)
 
-    # print(test1)
     countSentence1 = sum(Counter(train1.split("." and "\n" and "\r" and "?" and "!" and ":")).values())
     countSentence2 = sum(Counter(train2.split("." and "\n" and "\r" and "?" and "!" and ":")).values())
 
-    # print (countSentence2)
     class1words, class2words = countWords(train1, train2) # a dictionary with count of words
 
-    # print(class1words)
     countallword1 = sum(class1words.values())
     countallword2 = sum(class2words.values())
 
@@ -157,28 +138,19 @@ def classifier():
 
     countDistWords1 = len(class1words.keys())
     countDistWords2 = len(class2words.keys())
-    # print(class2words.keys())
 
     # test :
-
-    
-
     pclass1 = (countSentence1/(countSentence1+countSentence2))
     pclass2 = (countSentence2/(countSentence1+countSentence2))
-    # print(pclass2, pclass1, "PPPPPPPPPPPPPP")
     print(countSentence1,"Count sentence 1")
 
-    
+
     sentence1 = test1.split("." and "\n" and "\r" and "?" and "!" and ":" and " ")
     sentence2 = test2.split("." and "\n" and "\r" and "?" and "!" and ":" and " ")
     sentence1 = stringifyEvery5Words(sentence1)
     sentence2 = stringifyEvery5Words(sentence2)
-    # print(sentence1)
 
-
-    # print(sentence2)
-
-    # print(len(sentence1))
+    # compute precision and recall:
     tp = 0
     fn = 0
     fp = 0
@@ -201,10 +173,6 @@ def classifier():
     precision = tp/(tp+fp)
     recall = tp/(tp+fn)
     print(precision, recall)
-   
-   
+
+
 classifier()
-
-
-
-
